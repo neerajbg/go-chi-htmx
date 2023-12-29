@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <title>CHI HTMX Demo</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        .box {
+            padding: 1em;
+            margin: 1em;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>CHI HTMX Demo</h1>
+
+    <div id="user-info" class="box">
+        <P>Test</P>
+    </div>
+
+    <button hx-get="/user-info" hx-target="#user-info" hx-swap="innerHTML">
+        Click Me
+    </button>
+</body>
+
+</html>
