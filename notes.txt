@@ -1,0 +1,1 @@
+dsn := "host=localhost port=5432 user=<DB_username> password=<DB_pasword> dbname=chi-htmx-demo sslmode=disable"
