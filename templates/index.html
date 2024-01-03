@@ -20,11 +20,15 @@
 <body>
     <h1>CHI HTMX Demo</h1>
 
-    <div id="user-info" class="box">
+    <div>
+        <button hx-get="/posts" hx-target="#content-container" hx-swap="innerHTML">Article List</button>
+        <button>Product List</button>
+    </div>
+    <div id="content-container" class="box">
         <P>Test</P>
     </div>
 
-    <button hx-get="/user-info" hx-target="#user-info" hx-swap="innerHTML">
+    <button hx-get="/user-info" hx-target="#content-container" hx-swap="innerHTML">
         Click Me
     </button>
 </body>

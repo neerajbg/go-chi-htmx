@@ -71,7 +71,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := DBConn.Query(sql)
 
-	defer DBConn.Close()
+	defer rows.Close()
 
 	if err != nil {
 		log.Println("error in DB execution", err)
@@ -90,6 +90,18 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(posts)
-	w.Write([]byte("Post info from API server."))
+
+	ctx := make(map[string]interface{})
+
+	ctx["posts"] = posts
+	ctx["heading"] = "Article List"
+
+	t, _ := template.ParseFiles("templates/pages/post.html")
+
+	err = t.Execute(w, ctx)
+
+	if err != nil {
+		log.Println("Error in tpl execution", err)
+	}
 
 }
