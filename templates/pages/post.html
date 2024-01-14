@@ -1,11 +1,14 @@
 <div>
 
-    <h3>{{.heading}}</h3>
+    <h3 class="text-center font-bold">{{.heading}}</h3>
 
     <ul>
         {{range .posts}}
 
-        <li>{{.Id }} - {{.Title}}</li>
+        <li>{{.Id }} - <span
+                class="text-violet-500 hover:cursor-pointer hover:text-red-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"
+                hx-get="/post/{{.Id}}" hx-target="#content-container" hx-swap="innerHTML">
+                {{.Title}}</span></li>
         {{end}}
     </ul>
 

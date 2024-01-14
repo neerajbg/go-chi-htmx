@@ -4,33 +4,28 @@
     <title>CHI HTMX Demo</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-    <style>
-        h1 {
-            text-align: center;
-        }
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        .box {
-            padding: 1em;
-            margin: 1em;
-            border: 1px solid #ccc;
-        }
-    </style>
 </head>
 
 <body>
-    <h1>CHI HTMX Demo</h1>
+    <div class="container mx-auto px-2 mt-6">
+
+    <h1 class="text-center font-extrabold">CHI HTMX Demo</h1>
 
     <div>
-        <button hx-get="/posts" hx-target="#content-container" hx-swap="innerHTML">Article List</button>
-        <button>Product List</button>
+        <button class="bg-orange-500 text-white p-3 border-2 border-lime-950" hx-get="/posts" hx-target="#content-container" hx-swap="innerHTML">Article List</button>
+        <button class="bg-orange-500 text-white p-3 border-2 border-lime-950">Product List</button>
+        <button class="bg-orange-500 text-white p-3 border-2 border-lime-950" hx-get="/user-info" hx-target="#content-container" hx-swap="innerHTML">
+            Click Me
+        </button>
     </div>
-    <div id="content-container" class="box">
+    <div id="content-container" class="p-6 mt-6 mb-6 border-2 border-black">
         <P>Test</P>
     </div>
 
-    <button hx-get="/user-info" hx-target="#content-container" hx-swap="innerHTML">
-        Click Me
-    </button>
+    
+</div>
 </body>
 
 </html>
