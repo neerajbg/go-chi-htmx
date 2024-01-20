@@ -27,6 +27,9 @@ func main() {
 
 	r.Get("/posts", postHandler)
 
+	r.Get("/post/create", createPostHandler)
+	r.Post("/post/create", createPostHandler)
+
 	// Handler using Context middleware to perform repetitive tasks in middleware
 	r.Route("/post/{id}", func(r chi.Router) {
 		r.Use(middlewares.PostCtx)
@@ -41,6 +44,54 @@ func main() {
 	// r.Get("/post/{id}", GetPostHandler) // Regular approach
 
 	log.Fatal(http.ListenAndServe(":3000", r))
+}
+
+func createPostHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := make(map[string]interface{})
+
+	//post part
+
+	if r.Method == "POST" {
+
+		r.ParseForm()
+
+		title := r.PostForm.Get("title")
+		description := r.PostForm.Get("description")
+
+		stmt := "insert into posts (title, description) VALUES ($1, $2)"
+
+		q, err := database.DBConn.Prepare(stmt)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		res, err := q.Exec(title, description)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		rowsAffected, _ := res.RowsAffected()
+
+		if rowsAffected == 1 {
+			ctx["success"] = "Post successfully created."
+		}
+
+		log.Println("Rows affected - ", rowsAffected)
+
+	}
+
+	// Get part
+	t, _ := template.ParseFiles("templates/pages/post_form.html")
+
+	err := t.Execute(w, ctx)
+
+	if err != nil {
+		log.Println("Error in template execution.")
+	}
+
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {

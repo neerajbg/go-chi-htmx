@@ -2,6 +2,13 @@
 
     <h3 class="text-center font-bold">{{.heading}}</h3>
 
+    <div>
+        <button class="bg-green-500 p-3" hx-get="/post/create" hx-target="#content-container" hx-swap="innerHTML">Create
+            New Post</button>
+    </div>
+
+
+
     <ul>
         {{range .posts}}
 
