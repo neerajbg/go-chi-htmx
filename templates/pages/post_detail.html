@@ -2,6 +2,10 @@
 
     <h3 class="text-center font-bold">{{.post.Title}}</h3>
 
+    <div>
+        <button class="bg-green-800 p-2 text-white" hx-get="/post/{{.post.Id}}/edit" hx-target="#content-container" hx-swap="innerHTML">Edit</button>
+        <button class="bg-red-800 p-2 text-white">Delete</button>
+    </div>
     <div>{{.post.Description}}</div>
 
 </div>

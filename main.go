@@ -37,6 +37,9 @@ func main() {
 		// post object fetched in the PostCtx middleware. Handlers can perform its own specific set of actions.
 		r.Get("/", getPostHandler)
 
+		r.Get("/edit", editPostHandler)
+		r.Post("/edit", editPostHandler)
+
 		// r.Post("/", postPostHandler) // Handle Post request
 		// r.Put("/", putPostHandler) // Handle Put request
 	})
@@ -112,6 +115,60 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 func userInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User info from API server."))
+
+}
+
+func editPostHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := make(map[string]interface{})
+	p := r.Context().Value("post")
+
+	post := p.(model.Post)
+
+	// Post Part
+
+	if r.Method == "POST" {
+
+		r.ParseForm()
+
+		title := r.PostForm.Get("title")
+		description := r.PostForm.Get("description")
+
+		stmt := "UPDATE posts set title=$1, description=$2 where id=$3"
+
+		query, err := database.DBConn.Prepare(stmt)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		res, err := query.Exec(title, description, post.Id)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		rowsAffected, _ := res.RowsAffected()
+
+		if rowsAffected == 1 {
+			ctx["success"] = "Post successully updated."
+		}
+
+		log.Println(rowsAffected)
+
+	}
+
+	// Get Part
+
+	// Load template
+	t, _ := template.ParseFiles("templates/pages/post_form.html")
+
+	ctx["post"] = post
+	err := t.Execute(w, ctx)
+
+	if err != nil {
+		log.Println("Error in tpl execution", err)
+	}
 
 }
 
