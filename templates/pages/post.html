@@ -12,10 +12,20 @@
     <ul>
         {{range .posts}}
 
-        <li>{{.Id }} - <span
+        <li class="mb-3" id="post-{{.Id}}">
+            <div>{{.Id }} - <span
                 class="text-violet-500 hover:cursor-pointer hover:text-red-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"
                 hx-get="/post/{{.Id}}" hx-target="#content-container" hx-swap="innerHTML">
-                {{.Title}}</span></li>
+                {{.Title}}</span>
+
+                <span class="float-right">
+                    <button class="bg-green-800 p-1 text-white" hx-get="/post/{{.Id}}/edit" hx-target="#content-container" hx-swap="innerHTML">Edit</button>
+
+                    <button class="bg-red-900 p-1 text-white" hx-confirm="Are you sure to delete this post." hx-delete="/post/{{.Id}}/delete" hx-target="#post-{{.Id}}" hx-swap="delete">Delete</button>
+                </span>
+            </div>
+            
+        </li>
         {{end}}
     </ul>
 

@@ -40,6 +40,8 @@ func main() {
 		r.Get("/edit", editPostHandler)
 		r.Post("/edit", editPostHandler)
 
+		r.Delete("/delete", deletePostHandler)
+
 		// r.Post("/", postPostHandler) // Handle Post request
 		// r.Put("/", putPostHandler) // Handle Put request
 	})
@@ -115,6 +117,34 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 func userInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User info from API server."))
+
+}
+
+// Helper function
+func catchErr(err error) {
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func deletePostHandler(w http.ResponseWriter, r *http.Request) {
+	post := r.Context().Value("post").(model.Post)
+
+	stmt := "DELETE from posts where id=$1"
+
+	query, err := database.DBConn.Prepare(stmt)
+
+	catchErr(err)
+
+	res, err := query.Exec(post.Id)
+
+	catchErr(err)
+
+	rowsAffected, _ := res.RowsAffected()
+
+	log.Println("Rows affected: ", rowsAffected)
+
+	w.Write([]byte("Record deleted successfully."))
 
 }
 
