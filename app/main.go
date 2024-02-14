@@ -1,24 +1,68 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/neerajbg/chi-htmx/database"
 	"github.com/neerajbg/chi-htmx/middlewares"
 	"github.com/neerajbg/chi-htmx/model"
+
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	_ "github.com/lib/pq"
 )
 
 func init() {
+
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Error in loading .env file.")
+	}
+
 	database.ConnectDB()
+
 }
+
+func migrate_database() {
+	DB_PASSWORD := os.Getenv("DB_PASSWORD")
+	DB_USER := os.Getenv("DB_USER")
+	DB_HOST := os.Getenv("DB_HOST")
+	DB_NAME := os.Getenv("DB_NAME")
+	DB_PORT := os.Getenv("DB_PORT")
+
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
+
+	log.Println(dsn)
+
+	driver, err := postgres.WithInstance(database.DBConn, &postgres.Config{})
+
+	if err != nil {
+
+		log.Fatal("Migration Driver error: ", err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://migration",
+		DB_NAME, driver)
+
+	if err != nil {
+
+		log.Fatal("Migration error: ", err)
+	}
+	m.Up()
+}
+
 func main() {
 	defer database.DBConn.Close()
+	migrate_database() // Migrate database
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 

@@ -1,0 +1,27 @@
+version: '3'
+services:
+  chi_app:
+    image: chi_app
+    build: ./app
+    container_name: "chi_cont"
+    ports:
+      - 3000:3000
+    env_file:
+      - "./app/.env"
+    depends_on:
+      - db
+  db:
+    image: postgres
+    container_name: "postgres_cont"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: neeraj
+      POSTGRES_DB: chi-htmx-demo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  postgres_data:
+
